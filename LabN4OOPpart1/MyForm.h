@@ -1,7 +1,7 @@
 #pragma once
+#include <cmath>
 #include "Repository.h"
 #include "CCircle.h"
-#include <list>
 
 namespace LabN4OOPpart1 {
 
@@ -13,6 +13,7 @@ namespace LabN4OOPpart1 {
 	using namespace System::Drawing;
 
 	Repository repos(10);	// Хранилище объектов
+
 	/// <summary>
 	/// Сводка для MyForm
 	/// </summary>
@@ -72,26 +73,43 @@ namespace LabN4OOPpart1 {
 		}
 #pragma endregion
 	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {
-		bool check = false;
-		int R = 100;
-		for (int i = 0; i < repos.getCount(); ++i) {
-			int x = this->PointToClient(Cursor->Position).X - R / 2;
-			int y = this->PointToClient(Cursor->Position).Y - R / 2;
-			if (!repos.isNull(i))
-				if (abs(repos.getObject(i).getX() - x) <= R && abs(repos.getObject(i).getY() - y) <= R) {
-					check = true;
-					break;
+		int check = 0;
+		int D = 100, selected;
+		for (int i = 0; i < repos.getSize(); ++i) {
+			int x = this->PointToClient(Cursor->Position).X;
+			int y = this->PointToClient(Cursor->Position).Y;
+			if (!repos.isNull(i)) {
+				if (abs(repos.getObject(i).getX() - x) <= D / 2 && abs(repos.getObject(i).getY() - y) <= D / 2) {
+					check = 1;
+					selected = i;
 				}
+			}
+			if (check > 0) break;
 		}
-		if (!check) {
-			repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X - R / 2, this->PointToClient(Cursor->Position).Y - R / 2, R));
+		if (check == 0);
+		for (int i = 0; i < repos.getSize(); ++i) {
+			int x = this->PointToClient(Cursor->Position).X;
+			int y = this->PointToClient(Cursor->Position).Y;
+			if (!repos.isNull(i)) {
+				if (abs(repos.getObject(i).getX() - x) <= D && abs(repos.getObject(i).getY() - y) <= D) {
+					check = 2;
+					selected = i;
+				}
+			}
+			if (check > 0) break;
+		}
+		switch (check) {
+		case 0: repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X, this->PointToClient(Cursor->Position).Y, D / 2)); break;
+		case 1: break;
+		case 2: break;
 		}
 		MyForm::Refresh();
 	}
 	private: System::Void MyForm_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 		Pen^ pen = gcnew Pen(Color::Black);
-		for (int i = 0; i < repos.getCount(); ++i) {
-			e->Graphics->DrawEllipse(pen, repos.getObject(i).getX(), repos.getObject(i).getY(), repos.getObject(i).getR(), repos.getObject(i).getR());
+		for (int i = 0; i < repos.getSize(); ++i) {
+			if (!repos.isNull(i))
+				e->Graphics->DrawEllipse(pen, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
 		}
 		delete pen;
 	}
