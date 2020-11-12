@@ -1,6 +1,7 @@
 #pragma once
 #include "Repository.h"
 #include "CCircle.h"
+#include <list>
 
 namespace LabN4OOPpart1 {
 
@@ -37,7 +38,7 @@ namespace LabN4OOPpart1 {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::PictureBox^ pictureBox1;
+
 	protected:
 
 	protected:
@@ -55,44 +56,44 @@ namespace LabN4OOPpart1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// pictureBox1
-			// 
-			this->pictureBox1->Location = System::Drawing::Point(12, 12);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(760, 537);
-			this->pictureBox1->TabIndex = 0;
-			this->pictureBox1->TabStop = false;
-			this->pictureBox1->Click += gcnew System::EventHandler(this, &MyForm::pictureBox1_Click);
-			this->pictureBox1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::pictureBox1_Paint);
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(784, 561);
-			this->Controls->Add(this->pictureBox1);
+			this->ClientSize = System::Drawing::Size(1264, 681);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
+			this->Click += gcnew System::EventHandler(this, &MyForm::MyForm_Click);
+			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::MyForm_Paint);
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
-	private: System::Void pictureBox1_Click(System::Object^ sender, System::EventArgs^ e) {
-		repos.addObject(new CCircle(Cursor->Position.X, Cursor->Position.Y, 100));
-
-	}
-	private: System::Void pictureBox1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
-		repos.addObject(new CCircle(10, 10, 100));
-		Brush^ brush = gcnew SolidBrush(Color::FromArgb(0,0,0));
+	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {
+		bool check = false;
+		int R = 100;
 		for (int i = 0; i < repos.getCount(); ++i) {
-			e->Graphics->FillEllipse(brush, repos.getObject(i).getX(), repos.getObject(i).getY(), repos.getObject(i).getR(), repos.getObject(i).getR());
+			int x = this->PointToClient(Cursor->Position).X - R / 2;
+			int y = this->PointToClient(Cursor->Position).Y - R / 2;
+			if (!repos.isNull(i))
+				if (abs(repos.getObject(i).getX() - x) <= R && abs(repos.getObject(i).getY() - y) <= R) {
+					check = true;
+					break;
+				}
 		}
-		delete brush;
+		if (!check) {
+			repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X - R / 2, this->PointToClient(Cursor->Position).Y - R / 2, R));
+		}
+		MyForm::Refresh();
+	}
+	private: System::Void MyForm_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+		Pen^ pen = gcnew Pen(Color::Black);
+		for (int i = 0; i < repos.getCount(); ++i) {
+			e->Graphics->DrawEllipse(pen, repos.getObject(i).getX(), repos.getObject(i).getY(), repos.getObject(i).getR(), repos.getObject(i).getR());
+		}
+		delete pen;
 	}
 	};
 }
