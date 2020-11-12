@@ -83,10 +83,16 @@ namespace LabN4OOPpart1 {
 		}
 #pragma endregion
 	private: System::Void pictureBox1_Click(System::Object^ sender, System::EventArgs^ e) {
+		repos.addObject(new CCircle(Cursor->Position.X, Cursor->Position.Y, 100));
 
 	}
 	private: System::Void pictureBox1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
-
+		repos.addObject(new CCircle(10, 10, 100));
+		Brush^ brush = gcnew SolidBrush(Color::FromArgb(0,0,0));
+		for (int i = 0; i < repos.getCount(); ++i) {
+			e->Graphics->FillEllipse(brush, repos.getObject(i).getX(), repos.getObject(i).getY(), repos.getObject(i).getR(), repos.getObject(i).getR());
+		}
+		delete brush;
 	}
 	};
 }

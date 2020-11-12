@@ -2,14 +2,14 @@
 
 class CCircle {	// Объект
 protected:
-	double x, y, R;
+	int x, y, R;
 public:
 	CCircle() {	// Конструктор
 		x = 0;
 		y = 0;
 		R = 0;
 	}
-	CCircle(double x, double y, double R) {	// Конструктор
+	CCircle(int x, int y, int R) {	// Конструктор
 		this->x = x;
 		this->y = y;
 		this->R = R;
@@ -22,7 +22,19 @@ public:
 	virtual ~CCircle() {	// Деструктор
 
 	}
-	void Paint() {
-
+	int getX() {
+		return x;
+	}
+	int getY() {
+		return y;
+	}
+	int getR() {
+		return R;
+	}
+	void setX(int x) {
+		this->x = x;
+	}
+	void setY(int y) {
+		this->y = y;
 	}
 };
