@@ -75,44 +75,49 @@ namespace LabN4OOPpart1 {
 	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {
 		int check = 0;
 		int D = 100, selected;
-		for (int i = 0; i < repos.getSize(); ++i) {
-			int x = this->PointToClient(Cursor->Position).X;
-			int y = this->PointToClient(Cursor->Position).Y;
-			if (!repos.isNull(i)) {
-				if (abs(repos.getObject(i).getX() - x) <= D / 2 && abs(repos.getObject(i).getY() - y) <= D / 2) {
-					check = 1;
-					selected = i;
-				}
-			}
-			if (check > 0) break;
-		}
-		if (check == 0);
-		for (int i = 0; i < repos.getSize(); ++i) {
-			int x = this->PointToClient(Cursor->Position).X;
-			int y = this->PointToClient(Cursor->Position).Y;
-			if (!repos.isNull(i)) {
-				if (abs(repos.getObject(i).getX() - x) <= D && abs(repos.getObject(i).getY() - y) <= D) {
-					check = 2;
-					selected = i;
-				}
-			}
-			if (check > 0) break;
-		}
-		switch (check) {
-		case 0:
+		if (!(Control::ModifierKeys == Keys::Control)) {
 			for (int i = 0; i < repos.getSize(); ++i) {
-				if (!repos.isNull(i))
-					repos.getObject(i).setSelected(false);
+				int x = this->PointToClient(Cursor->Position).X;
+				int y = this->PointToClient(Cursor->Position).Y;
+				if (!repos.isNull(i)) {
+					if (abs(repos.getObject(i).getX() - x) <= D / 2 && abs(repos.getObject(i).getY() - y) <= D / 2) {
+						check = 1;
+						selected = i;
+					}
+				}
+				if (check > 0) break;
 			}
-			repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X, this->PointToClient(Cursor->Position).Y, D / 2));
-			break;
-		case 1:
+			switch (check) {
+			case 0:
+				for (int i = 0; i < repos.getSize(); ++i) {
+					if (!repos.isNull(i))
+						repos.getObject(i).setSelected(false);
+				}
+				repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X, this->PointToClient(Cursor->Position).Y, D / 2));
+				break;
+			case 1:
+				for (int i = 0; i < repos.getSize(); ++i) {
+					if (!repos.isNull(i))
+						repos.getObject(i).setSelected(false);
+				}
+				repos.getObject(selected).setSelected(true);
+				break;
+			}
+		}
+		else {
 			for (int i = 0; i < repos.getSize(); ++i) {
-				if (!repos.isNull(i))
-					repos.getObject(i).setSelected(false);
+				int x = this->PointToClient(Cursor->Position).X;
+				int y = this->PointToClient(Cursor->Position).Y;
+				if (!repos.isNull(i)) {
+					if (abs(repos.getObject(i).getX() - x) <= D / 2 && abs(repos.getObject(i).getY() - y) <= D / 2) {
+						check = 1;
+						selected = i;
+					}
+				}
+				if (check > 0) break;
 			}
-			repos.getObject(selected).setSelected(true);
-			break;
+			if (check == 1)
+				repos.getObject(selected).setSelected(true);
 		}
 		MyForm::Refresh();
 	}
@@ -121,8 +126,8 @@ namespace LabN4OOPpart1 {
 		Brush^ brush = gcnew SolidBrush(Color::FromArgb(0, 0, 0));
 		for (int i = 0; i < repos.getSize(); ++i) {
 			if (!repos.isNull(i)) {
-				if (repos.getObject(i).getSelected()==false)
-				e->Graphics->DrawEllipse(pen, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
+				if (repos.getObject(i).getSelected() == false)
+					e->Graphics->DrawEllipse(pen, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
 				else
 					e->Graphics->FillEllipse(brush, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
 			}
