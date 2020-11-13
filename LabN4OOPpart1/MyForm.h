@@ -99,19 +99,36 @@ namespace LabN4OOPpart1 {
 			if (check > 0) break;
 		}
 		switch (check) {
-		case 0: repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X, this->PointToClient(Cursor->Position).Y, D / 2)); break;
-		case 1: break;
-		case 2: break;
+		case 0:
+			for (int i = 0; i < repos.getSize(); ++i) {
+				if (!repos.isNull(i))
+					repos.getObject(i).setSelected(false);
+			}
+			repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X, this->PointToClient(Cursor->Position).Y, D / 2));
+			break;
+		case 1:
+			for (int i = 0; i < repos.getSize(); ++i) {
+				if (!repos.isNull(i))
+					repos.getObject(i).setSelected(false);
+			}
+			repos.getObject(selected).setSelected(true);
+			break;
 		}
 		MyForm::Refresh();
 	}
 	private: System::Void MyForm_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 		Pen^ pen = gcnew Pen(Color::Black);
+		Brush^ brush = gcnew SolidBrush(Color::FromArgb(0, 0, 0));
 		for (int i = 0; i < repos.getSize(); ++i) {
-			if (!repos.isNull(i))
+			if (!repos.isNull(i)) {
+				if (repos.getObject(i).getSelected()==false)
 				e->Graphics->DrawEllipse(pen, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
+				else
+					e->Graphics->FillEllipse(brush, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
+			}
 		}
 		delete pen;
+		delete brush;
 	}
 	};
 }
