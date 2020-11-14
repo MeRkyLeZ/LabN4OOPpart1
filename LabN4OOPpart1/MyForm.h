@@ -74,13 +74,13 @@ namespace LabN4OOPpart1 {
 
 		}
 #pragma endregion
-	private: int GetDistance(int x0, int x, int y0, int y) {
+	private: int GetDistance(int x0, int x, int y0, int y) {	// Вычисление дистанции между точками
 		return (pow((x0 - x), 2) + pow((y0 - y), 2));
 	}
-	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {	// Обработчик нажатия на форму
 		int check = 0;
 		int selected, x, y;
-		if ((Control::ModifierKeys == Keys::Control)) {
+		if ((Control::ModifierKeys == Keys::Control)) {	// Проверка нажатия Ctrl
 			for (int i = 0; i < repos.getSize(); ++i) {
 				x = this->PointToClient(Cursor->Position).X;
 				y = this->PointToClient(Cursor->Position).Y;
@@ -133,30 +133,30 @@ namespace LabN4OOPpart1 {
 				break;
 			}
 		}
-		MyForm::Refresh();
+		MyForm::Refresh();	// Обновление формы
 	}
-	private: System::Void MyForm_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
-		Pen^ pen = gcnew Pen(Color::Black);
-		Brush^ brush = gcnew SolidBrush(Color::FromArgb(0, 0, 0));
+	private: System::Void MyForm_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {	// Отрисовка формы
+		Pen^ pen = gcnew Pen(Color::Black);	// Кисть
+		Brush^ brush = gcnew SolidBrush(Color::FromArgb(0, 0, 0));	// Заливка
 		for (int i = 0; i < repos.getSize(); ++i) {
 			if (!repos.isNull(i)) {
-				if (repos.getObject(i).getSelected() == false)
+				if (repos.getObject(i).getSelected() == false)	// Рисуем элемент
 					e->Graphics->DrawEllipse(pen, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
-				else
+				else	// Заливаем элемент
 					e->Graphics->FillEllipse(brush, repos.getObject(i).getX() - repos.getObject(i).getR(), repos.getObject(i).getY() - repos.getObject(i).getR(), repos.getObject(i).getR() * 2, repos.getObject(i).getR() * 2);
 			}
 		}
 		delete pen;
 		delete brush;
 	}
-	private: System::Void MyForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+	private: System::Void MyForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {	// Обработчик нажатия клавиши
 		if (e->KeyCode == Keys::Delete) {
 			for (int i = 0; i < repos.getSize(); ++i) {
 				if (!repos.isNull(i))
 					if (repos.getObject(i).getSelected() == true)
 						repos.delObject(i);
 			}
-			MyForm::Refresh();
+			MyForm::Refresh();	// Обновление формы
 		}
 	}
 	};
