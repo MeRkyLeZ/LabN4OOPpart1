@@ -79,7 +79,7 @@ namespace LabN4OOPpart1 {
 	}
 	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {	// Обработчик нажатия на форму
 		int check = 0;
-		int selected, x, y;
+		int x, y;
 		if ((Control::ModifierKeys == Keys::Control)) {	// Проверка нажатия Ctrl
 			for (int i = 0; i < repos.getSize(); ++i) {
 				x = this->PointToClient(Cursor->Position).X;
@@ -90,47 +90,49 @@ namespace LabN4OOPpart1 {
 							check = 1;
 						else
 							check = 2;
-						selected = i;
 					}
 				}
 				if (check > 0) break;
 			}
 			switch (check) {
 			case 1:
-				repos.getObject(selected).setSelected(true);
+				for (int i = 0; i < repos.getSize(); ++i) {
+					if (!repos.isNull(i)) {
+						if (GetDistance(repos.getObject(i).getX(), x, repos.getObject(i).getY(), y) <= pow(D / 2, 2)) {
+							repos.getObject(i).setSelected(true);
+						}
+					}
+				}
 				break;
 			case 2:
-				repos.getObject(selected).setSelected(false);
+				for (int i = 0; i < repos.getSize(); ++i) {
+					if (!repos.isNull(i)) {
+						if (GetDistance(repos.getObject(i).getX(), x, repos.getObject(i).getY(), y) <= pow(D / 2, 2)) {
+							repos.getObject(i).setSelected(false);
+						}
+					}
+				}
 				break;
 			}
 		}
 		else {
+			for (int i = 0; i < repos.getSize(); ++i) {
+				if (!repos.isNull(i))
+					repos.getObject(i).setSelected(false);
+			}
 			for (int i = 0; i < repos.getSize(); ++i) {
 				x = this->PointToClient(Cursor->Position).X;
 				y = this->PointToClient(Cursor->Position).Y;
 				if (!repos.isNull(i)) {
 					if (GetDistance(repos.getObject(i).getX(), x, repos.getObject(i).getY(), y) <= pow(D / 2, 2)) {
 						check = 1;
-						selected = i;
+						repos.getObject(i).setSelected(true);
 					}
+
 				}
-				if (check > 0) break;
 			}
-			switch (check) {
-			case 0:
-				for (int i = 0; i < repos.getSize(); ++i) {
-					if (!repos.isNull(i))
-						repos.getObject(i).setSelected(false);
-				}
+			if (check == 0) {
 				repos.addObject(new CCircle(x, y, D / 2));
-				break;
-			case 1:
-				for (int i = 0; i < repos.getSize(); ++i) {
-					if (!repos.isNull(i))
-						repos.getObject(i).setSelected(false);
-				}
-				repos.getObject(selected).setSelected(true);
-				break;
 			}
 		}
 		MyForm::Refresh();	// Обновление формы
