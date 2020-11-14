@@ -69,6 +69,7 @@ namespace LabN4OOPpart1 {
 			this->Text = L"MyForm";
 			this->Click += gcnew System::EventHandler(this, &MyForm::MyForm_Click);
 			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::MyForm_Paint);
+			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::MyForm_KeyDown);
 			this->ResumeLayout(false);
 
 		}
@@ -147,6 +148,16 @@ namespace LabN4OOPpart1 {
 		}
 		delete pen;
 		delete brush;
+	}
+	private: System::Void MyForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+		if (e->KeyCode == Keys::Delete) {
+			for (int i = 0; i < repos.getSize(); ++i) {
+				if (!repos.isNull(i))
+					if (repos.getObject(i).getSelected() == true)
+						repos.delObject(i);
+			}
+			MyForm::Refresh();
+		}
 	}
 	};
 }
