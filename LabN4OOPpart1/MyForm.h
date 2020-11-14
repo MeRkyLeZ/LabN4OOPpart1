@@ -13,6 +13,7 @@ namespace LabN4OOPpart1 {
 	using namespace System::Drawing;
 
 	Repository repos(10);	// Хранилище объектов
+	const int D = 100;	// Диаметр круга
 
 	/// <summary>
 	/// Сводка для MyForm
@@ -72,15 +73,42 @@ namespace LabN4OOPpart1 {
 
 		}
 #pragma endregion
+	private: int GetDistance(int x0, int x, int y0, int y) {
+		return (pow((x0 - x), 2) + pow((y0 - y), 2));
+	}
 	private: System::Void MyForm_Click(System::Object^ sender, System::EventArgs^ e) {
 		int check = 0;
-		int D = 100, selected;
-		if (!(Control::ModifierKeys == Keys::Control)) {
+		int selected, x, y;
+		if ((Control::ModifierKeys == Keys::Control)) {
 			for (int i = 0; i < repos.getSize(); ++i) {
-				int x = this->PointToClient(Cursor->Position).X;
-				int y = this->PointToClient(Cursor->Position).Y;
+				x = this->PointToClient(Cursor->Position).X;
+				y = this->PointToClient(Cursor->Position).Y;
 				if (!repos.isNull(i)) {
-					if (abs(repos.getObject(i).getX() - x) <= D / 2 && abs(repos.getObject(i).getY() - y) <= D / 2) {
+					if (GetDistance(repos.getObject(i).getX(), x, repos.getObject(i).getY(), y) <= pow(D / 2, 2)) {
+						if (repos.getObject(i).getSelected() == false)
+							check = 1;
+						else
+							check = 2;
+						selected = i;
+					}
+				}
+				if (check > 0) break;
+			}
+			switch (check) {
+			case 1:
+				repos.getObject(selected).setSelected(true);
+				break;
+			case 2:
+				repos.getObject(selected).setSelected(false);
+				break;
+			}
+		}
+		else {
+			for (int i = 0; i < repos.getSize(); ++i) {
+				x = this->PointToClient(Cursor->Position).X;
+				y = this->PointToClient(Cursor->Position).Y;
+				if (!repos.isNull(i)) {
+					if (GetDistance(repos.getObject(i).getX(), x, repos.getObject(i).getY(), y) <= pow(D / 2, 2)) {
 						check = 1;
 						selected = i;
 					}
@@ -93,7 +121,7 @@ namespace LabN4OOPpart1 {
 					if (!repos.isNull(i))
 						repos.getObject(i).setSelected(false);
 				}
-				repos.addObject(new CCircle(this->PointToClient(Cursor->Position).X, this->PointToClient(Cursor->Position).Y, D / 2));
+				repos.addObject(new CCircle(x, y, D / 2));
 				break;
 			case 1:
 				for (int i = 0; i < repos.getSize(); ++i) {
@@ -103,21 +131,6 @@ namespace LabN4OOPpart1 {
 				repos.getObject(selected).setSelected(true);
 				break;
 			}
-		}
-		else {
-			for (int i = 0; i < repos.getSize(); ++i) {
-				int x = this->PointToClient(Cursor->Position).X;
-				int y = this->PointToClient(Cursor->Position).Y;
-				if (!repos.isNull(i)) {
-					if (abs(repos.getObject(i).getX() - x) <= D / 2 && abs(repos.getObject(i).getY() - y) <= D / 2) {
-						check = 1;
-						selected = i;
-					}
-				}
-				if (check > 0) break;
-			}
-			if (check == 1)
-				repos.getObject(selected).setSelected(true);
 		}
 		MyForm::Refresh();
 	}
